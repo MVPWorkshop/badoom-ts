@@ -21,11 +21,8 @@ export const GOOGLE_CLIENT_SECRET = process.env['GOOGLE_CLIENT_SECRET'];
 
 const validLoginDomains = process.env['VALID_LOGIN_DOMAINS'] || '';
 
-export const BITGO_ACCESS_KEY = process.env['BITGO_ACCESS_KEY'];
-export const BITGO_ENVIRONMENT = process.env['BITGO_ENVIRONMENT'];
-
 export const VALID_LOGIN_DOMAINS = validLoginDomains.split(',').filter(domain => {
-  return !!domain;
+    return !!domain;
 });
 
 export const SECRET = process.env['SECRET'];
@@ -57,16 +54,6 @@ if (!POSTGRES_PASSWORD) {
 
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
   logger.error('Didn\'t provide GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
-  process.exit(1);
-}
-
-if (!BITGO_ACCESS_KEY) {
-  logger.error('Didn\'t provide BITGO_ACCESS_KEY');
-  process.exit(1);
-}
-
-if (BITGO_ENVIRONMENT !== 'test' && BITGO_ENVIRONMENT !== 'prod') {
-  logger.error('BITGO_ENVIRONMENT must be either \'test\' or \'prod\'');
   process.exit(1);
 }
 
