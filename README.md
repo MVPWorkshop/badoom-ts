@@ -2,7 +2,7 @@
 
 # TypeScript HTTP Framework
 
-![](https://thumb.ibb.co/mvcqip/badoom.gif)
+![](https://i.imgur.com/DAZKpgY.gif)
 > badoom-ts!
 
 ## Getting started
