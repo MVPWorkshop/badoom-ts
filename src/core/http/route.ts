@@ -97,8 +97,13 @@ function authorize(role: Role): RequestHandler {
 
 function wrapResponse(originalFunction: any): any {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const result: HttpResponse = await originalFunction(req, res, next);
+        const result: any = await originalFunction(req, res, next);
 
-        res.status(result.code).json(result.toJson());
+        if (result instanceof HttpResponse) {
+            res.status(result.code).json(result.toJson());
+            return;
+        }
+
+        res.json(result);
     };
 }
