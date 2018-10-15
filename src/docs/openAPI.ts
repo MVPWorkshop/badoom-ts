@@ -3,7 +3,7 @@ import HttpResponse from '../http/httpResponse';
 import 'reflect-metadata';
 import { AdditionalDocData } from './doc';
 
-const packageJson = require('../../../package.json');
+const packageJson = require('../../package.json');
 
 enum ComponentType {
   SCHEMA = 'schemas',

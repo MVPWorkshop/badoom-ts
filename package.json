@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "author": "MVP Workshop",
   "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "concurrently -k -p -n \"TypeScript,App\" -c \"blue.bold,magenta.bold\" \"ttsc -w\" \"nodemon dist/server.js\"",
     "debug": "concurrently -k -p -n \"TypeScript,App\" -c \"blue.bold,magenta.bold\" \"ttsc -w\" \"nodemon $NODE_DEBUG_OPTION dist/server.js\"",

@@ -18,12 +18,14 @@
     },
     "plugins": [
       {
-        "transform": "./src/core/compiler/genericResponseTransformer/transformer.ts"
+        "transform": "./src/compiler/genericResponseTransformer/transformer.ts"
       }
     ]
   },
   "include": [
     "src/**/*"
   ],
-  "exclude": ["src/core/compiler/**/*"]
+  "exclude": [
+    "src/compiler/**/*"
+  ]
 }

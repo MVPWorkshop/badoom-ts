@@ -4,52 +4,42 @@ import { RouteHandler } from './routeHandler';
 import openAPI, { Doc } from '../docs/openAPI';
 import HttpResponse, { HttpResponseInterface } from './httpResponse';
 import 'reflect-metadata';
-import { Role } from '../../auth/role';
-import passport from 'passport';
-
-import './isAuthenticated';
-import User from '../../database/models/user.model';
-import UnauthorizedError from '../../http/errors/unauthorizedError';
 
 export interface AdditionalOptions {
-    doc?: Doc;
-    middleware?: any[];
-    role?: Role;
+    before?: RequestHandler[];
+    after?: RequestHandler[];
 }
 
 function isAdditionalOptions(additionalOption: AdditionalOptions | any[]): additionalOption is AdditionalOptions {
-    return additionalOption && ((<AdditionalOptions>additionalOption).doc !== undefined ||
-        (<AdditionalOptions>additionalOption).middleware !== undefined ||
-        (<AdditionalOptions>additionalOption).role !== undefined);
+    return additionalOption && ((<AdditionalOptions>additionalOption).before !== undefined || (<AdditionalOptions>additionalOption).after !== undefined);
 }
 
 export function route(method: HttpMethod, path: string, additional?: any[] | AdditionalOptions) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        let middlewares;
-        let role: Role;
-
-        if (isAdditionalOptions(additional)) {
-            middlewares = additional.middleware;
-            role = additional.role;
-        }
-
-        if (!middlewares) {
-            middlewares = [];
-        }
-
-        if (role) {
-            middlewares.push(passport.authenticate('jwt', {session: false}));
-            middlewares.push(authorize(role));
-        }
+        const middlewares: RequestHandler[] = [];
+        let routeRequestHandler: RequestHandler;
 
         parseRequests(target, propertyKey, descriptor);
         parseResponses(target, propertyKey, descriptor);
 
         if (!Reflect.getMetadata('wrapped_response_function', target, propertyKey)) {
             descriptor.value = wrapResponse(descriptor.value);
+            routeRequestHandler = descriptor.value;
         }
 
-        middlewares.push(descriptor.value);
+
+        if (isAdditionalOptions(additional)) {
+            if (additional.before) {
+                middlewares.push.apply(middlewares, additional.before);
+            }
+
+            middlewares.push(routeRequestHandler);
+
+            if (additional.after) {
+                middlewares.push.apply(middlewares, additional.after);
+            }
+        }
+
 
         RouteHandler.createRoute(target.constructor.name + '-' + propertyKey, method, path, middlewares);
 
@@ -78,21 +68,6 @@ function parseResponses(target: any, propertyKey: string, descriptor: PropertyDe
         const code: number = response.code;
         const componentPath: string = openAPI.addComponent(responseType);
     });
-}
-
-function authorize(role: Role): RequestHandler {
-    return function (req: Request, res: Response, next: NextFunction): void {
-        const user: User = req.user;
-
-        if (!user || user.role !== role) {
-            const unauthorized = new UnauthorizedError();
-
-            res.status(unauthorized.code).json(unauthorized.toJson());
-            return;
-        }
-
-        next();
-    };
 }
 
 function wrapResponse(originalFunction: any): any {
