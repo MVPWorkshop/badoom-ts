@@ -3,8 +3,6 @@ import HttpResponse from '../http/httpResponse';
 import 'reflect-metadata';
 import { AdditionalDocData } from './doc';
 
-const packageJson = require('../../package.json');
-
 enum ComponentType {
   SCHEMA = 'schemas',
   RESPONSE = 'responses',
@@ -44,7 +42,6 @@ export class Path {
 
 export class OpenAPI {
   public openapi: string = '3.0.0';
-  public info: Info = new Info(packageJson.version, packageJson.name);
   public paths: { [path: string]: Path };
   public components: { [componentType: string]: { [component: string]: Component } };
 

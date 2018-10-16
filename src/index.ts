@@ -35,3 +35,8 @@ export function app(value: any) {
     RouteHandler.RegisterToExpress(express);
   };
 }
+
+export { default as Http } from './http';
+export { default as Logger } from './util/logger';
+export { default as Docs } from './docs';
+

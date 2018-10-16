@@ -10,7 +10,6 @@ export default function requestType(HttpRequest: HttpRequestInterface) {
         descriptor.value = async function (req: Request, res: Response, next: NextFunction) {
             const request = new HttpRequest();
             Object.assign(request, req.body);
-            Object.assign(request, req.files);
             const errors = await validate(request, {validationError: {target: false}});
 
             if (errors.length > 0) {
