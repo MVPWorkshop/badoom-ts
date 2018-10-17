@@ -5,7 +5,7 @@ import { HttpMethod } from './httpMethod';
 
 export class RouteHandler {
   private static provider = Provider.getDefaultProvider();
-  private static routes: Array<Route> = [];
+  private static routes: Route[] = [];
 
   public static createRoute(name: string, method: HttpMethod, path: string, middlewares: any[]) {
     const route = new Route(name, method, path, middlewares);
@@ -34,7 +34,7 @@ export class RouteHandler {
     });
   }
 
-  public static GetAllRoutes(): Array<Route> {
+  public static GetAllRoutes(): Route[] {
     return this.routes;
   }
 }
@@ -43,9 +43,9 @@ class Route {
   name: string;
   method: HttpMethod;
   path: string;
-  middlewares: Array<RequestHandler>;
+  middlewares: RequestHandler[];
 
-  constructor(name: string, method: HttpMethod, path: string, middlewares: Array<RequestHandler>) {
+  constructor(name: string, method: HttpMethod, path: string, middlewares: RequestHandler[]) {
     this.name = name;
     this.method = method;
     this.path = path;

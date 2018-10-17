@@ -18,8 +18,8 @@ export function route(method: HttpMethod, path: string, additional?: any[] | Add
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let middlewares: RequestHandler[] = [];
 
-        parseRequests(target, propertyKey, descriptor);
-        parseResponses(target, propertyKey, descriptor);
+        const requestComponentPath = parseRequests(target, propertyKey);
+        parseResponses(target, propertyKey, method, path, requestComponentPath);
 
         if (!Reflect.getMetadata('wrapped_response_function', target, propertyKey)) {
             descriptor.value = wrapResponse(descriptor.value);
@@ -45,11 +45,17 @@ export function route(method: HttpMethod, path: string, additional?: any[] | Add
     };
 }
 
-function parseRequests(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const metadata = Reflect.getMetadata('design:open_api_types', target, propertyKey);
+function parseRequests(target: any, propertyKey: string): string | undefined {
+    const requestType = Reflect.getMetadata('design:open_api_request_type', target, propertyKey);
+
+    if (!requestType) {
+        return;
+    }
+
+    return openAPI.addComponent(requestType);
 }
 
-function parseResponses(target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+function parseResponses(target: any, propertyKey: string, method: HttpMethod, path: string, requestComponentPath?: string): void {
     const types: HttpResponseInterface[] = Reflect.getMetadata('design:open_api_types', target, propertyKey);
 
     if (!types || !types.length) {
@@ -65,6 +71,8 @@ function parseResponses(target: any, propertyKey: string, descriptor: PropertyDe
 
         const code: number = response.code;
         const componentPath: string = openAPI.addComponent(responseType);
+
+        openAPI.addPath(path, method, code, componentPath, requestComponentPath);
     });
 }
 

@@ -3,26 +3,28 @@ import HttpResponse from './httpResponse';
 import { Response, Request, NextFunction } from 'express';
 import { validate } from 'class-validator';
 
-export default function requestType(HttpRequest: HttpRequestInterface) {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        const originalFunction = descriptor.value;
+export default function requestType(HttpRequest: HttpRequestInterface | any) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalFunction = descriptor.value;
 
-        descriptor.value = async function (req: Request, res: Response, next: NextFunction) {
-            const request = new HttpRequest();
-            Object.assign(request, req.body);
-            const errors = await validate(request, {validationError: {target: false}});
+    descriptor.value = async function (req: Request, res: Response, next: NextFunction) {
+      const request = new HttpRequest();
+      Object.assign(request, req.body);
 
-            if (errors.length > 0) {
-                return res.status(400).send(errors);
-            }
+      const errors = await validate(request, {validationError: {target: false}});
 
-            const result: HttpResponse = await originalFunction(req, res, request, next);
+      if (errors.length > 0) {
+        return res.status(400).send(errors);
+      }
 
-            res.status(result.code).json(result.toJson());
-        };
+      const result: HttpResponse = await originalFunction(req, request, res, next);
 
-        Reflect.defineMetadata('wrapped_response_function', true, target, propertyKey);
-
-        return descriptor;
+      res.status(result.code).json(result.toJson());
     };
+
+    Reflect.defineMetadata('design:open_api_request_type', HttpRequest, target, propertyKey);
+    Reflect.defineMetadata('wrapped_response_function', true, target, propertyKey);
+
+    return descriptor;
+  };
 }

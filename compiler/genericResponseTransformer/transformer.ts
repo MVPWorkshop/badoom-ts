@@ -77,8 +77,21 @@ function extractPromiseTypeNodes(node: ts.TypeReferenceNode, typeChecker: ts.Typ
     const type = typeChecker.getTypeFromTypeNode(childNode as ts.TypeNode);
     if (type.isUnion() || childNode.kind === ts.SyntaxKind.UnionType) {
       nodes = (<ts.UnionTypeNode>childNode).types.filter(isNotKeywordNode).map(subtype => {
-        return createNameNode(subtype as ts.TypeReferenceNode, childNode);
+        if (subtype.kind !== ts.SyntaxKind.ArrayType) {
+          return createNameNode(subtype as ts.TypeReferenceNode, childNode);
+        }
+
+        return createNameNode(((subtype as ts.ArrayTypeNode).elementType as ts.TypeReferenceNode), childNode);
       });
+      return;
+    }
+
+    if (!isNotKeywordNode(childNode)) {
+      return;
+    }
+
+    if (childNode.kind === ts.SyntaxKind.ArrayType) {
+      nodes = [createNameNode(((childNode as ts.ArrayTypeNode).elementType as ts.TypeReferenceNode), node)];
       return;
     }
 

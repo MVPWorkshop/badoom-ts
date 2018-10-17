@@ -3,7 +3,7 @@ export class Provider {
   }
 
   private static provider: Provider;
-  private instances: Array<InstanceType> = [];
+  private instances: InstanceType[] = [];
 
   public static getDefaultProvider(): Provider {
     if (!Provider.provider) {
