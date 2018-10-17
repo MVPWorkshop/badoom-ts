@@ -16,30 +16,28 @@ function isAdditionalOptions(additionalOption: AdditionalOptions | any[]): addit
 
 export function route(method: HttpMethod, path: string, additional?: any[] | AdditionalOptions) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        const middlewares: RequestHandler[] = [];
-        let routeRequestHandler: RequestHandler;
+        let middlewares: RequestHandler[] = [];
 
         parseRequests(target, propertyKey, descriptor);
         parseResponses(target, propertyKey, descriptor);
 
         if (!Reflect.getMetadata('wrapped_response_function', target, propertyKey)) {
             descriptor.value = wrapResponse(descriptor.value);
-            routeRequestHandler = descriptor.value;
         }
-
 
         if (isAdditionalOptions(additional)) {
             if (additional.before) {
                 middlewares.push.apply(middlewares, additional.before);
             }
 
-            middlewares.push(routeRequestHandler);
+            middlewares.push(descriptor.value);
 
             if (additional.after) {
                 middlewares.push.apply(middlewares, additional.after);
             }
+        } else {
+            middlewares = [descriptor.value];
         }
-
 
         RouteHandler.createRoute(target.constructor.name + '-' + propertyKey, method, path, middlewares);
 
@@ -79,6 +77,8 @@ function wrapResponse(originalFunction: any): any {
             return;
         }
 
-        res.json(result);
+        if (result) {
+            res.json(result);
+        }
     };
 }

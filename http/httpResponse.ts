@@ -1,4 +1,4 @@
-import { doc } from '../docs/doc';
+import { doc } from '../docs';
 
 export interface HttpResponseInterface {
   new(): HttpResponse;

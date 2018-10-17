@@ -1,4 +1,4 @@
-import { HttpMethod } from '../http/httpMethod';
+import { HttpMethod } from '../http';
 import HttpResponse from '../http/httpResponse';
 import 'reflect-metadata';
 import { AdditionalDocData } from './doc';
