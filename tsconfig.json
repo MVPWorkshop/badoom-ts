@@ -19,7 +19,7 @@
     },
     "plugins": [
       {
-        "transform": "./src/compiler/genericResponseTransformer/transformer.ts"
+        "transform": "./node_modules/badoom-ts/src/compiler/genericResponseTransformer/transformer.ts"
       }
     ]
   },
