@@ -11,6 +11,7 @@
     "test": "yarn run test:lint",
     "test:lint": "tslint -c tslint.json -p tsconfig.json",
     "build": "yarn run test && ttsc",
+    "build:transformer": "tsc ./compiler/transformer.ts",
     "db:migration:generate": "yarn run build && node dist/scripts/generate-migration.js",
     "db:migration:migrate": "yarn run build && ./node_modules/.bin/sequelize db:migrate"
   },

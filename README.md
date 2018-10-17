@@ -10,11 +10,25 @@
 1. Install dependencies:
 `yarn install`
 
-2. Run `docker-compose up -d`
+2. Setup `tsconfig.json`
 
-3. Start the watchers: `yarn start`
+3. Run `docker-compose up -d`
+
+4. Start the watchers: `yarn start`
 
 ## How to
 
 - Run db migrations: `yarn db:migration:migrate`
 - Create new migration: `yarn db:migration:generate --name create-users-table`
+
+## Publishing New Version
+
+#### Transformer Changes
+
+The transformer is used in other `tsconfig.json` files for compiling Typescript projects. In order for this to work the transformer file is distributed as a compiled .js file. 
+
+Before publishing a new version which contains changes in the transformer be sure to run the following command and commit any changes.
+
+```
+yarn build:transformer
+```
