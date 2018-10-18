@@ -19,7 +19,7 @@ export default function requestType(HttpRequest: HttpRequestInterface | any) {
 
       const result: HttpResponse = await originalFunction(req, request, res, next);
 
-      res.status(result.code).json(result.toJson());
+      res.status(result.code).json(result.toJSON());
     };
 
     Reflect.defineMetadata('design:open_api_request_type', HttpRequest, target, propertyKey);

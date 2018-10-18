@@ -8,7 +8,7 @@ export default abstract class HttpResponse {
   @doc()
   public code: number = 200;
 
-  public toJson(): object {
+  public toJSON(): object {
     const serialized = Object.assign({}, this);
 
     delete serialized['code'];

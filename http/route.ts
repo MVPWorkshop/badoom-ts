@@ -81,7 +81,7 @@ function wrapResponse(originalFunction: any): any {
     const result: any = await originalFunction(req, res, next);
 
     if (result instanceof HttpResponse) {
-      res.status(result.code).json(result.toJson());
+      res.status(result.code).json(result.toJSON());
       return;
     }
 
