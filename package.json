@@ -2,7 +2,7 @@
   "name": "badoom-ts",
   "version": "0.1.2",
   "author": "MVP Workshop",
-  "private": true,
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
