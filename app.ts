@@ -31,7 +31,9 @@ export function app(value: any) {
       });
     }
 
-    express.use('/swagger', swaggerUi.serve, swaggerUi.setup(undefined, options));
+    if (process.env['NODE_ENV'] === 'development') {
+      express.use('/swagger', swaggerUi.serve, swaggerUi.setup(undefined, options));
+    }
 
     RouteHandler.RegisterToExpress(express);
   };
