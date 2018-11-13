@@ -31,7 +31,7 @@ export function app(value: any) {
       });
     }
 
-    if (process.env['NODE_ENV'] === 'development') {
+    if (process.env['NODE_ENV'] !== 'production') {
       express.use('/swagger', swaggerUi.serve, swaggerUi.setup(undefined, options));
     }
 
