@@ -14,6 +14,9 @@ export class RouteHandler {
 
   public static RegisterToExpress(express: Express) {
     this.routes.forEach(route => {
+      if (route.path === '/api-doc' && process.env['NODE_ENV'] !== 'development') {
+        return;
+      }
       switch (route.method) {
         case HttpMethod.GET:
           express.get(route.path, route.middlewares);
