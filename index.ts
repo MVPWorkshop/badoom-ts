@@ -17,15 +17,16 @@ export function app(value: any) {
 
     const express = value.express.provider;
     constructor.prototype.express = express;
-    const middlewares = value.express.middlewares;
+    const beforeMiddleware = value.express.beforeMiddleware;
+    const afterMiddleware = value.express.afterMiddleware;
     const setters = value.express.setters;
 
     for (const key in setters) {
       express.set(key, setters[key]);
     }
 
-    if (middlewares && middlewares.length > 0) {
-      middlewares.forEach((middleware: any) => {
+    if (beforeMiddleware && beforeMiddleware.length > 0) {
+      beforeMiddleware.forEach((middleware: any) => {
         express.use(middleware);
       });
     }
@@ -35,8 +36,17 @@ export function app(value: any) {
     }
 
     RouteHandler.RegisterToExpress(express);
+
+    if (afterMiddleware && afterMiddleware.length > 0) {
+      afterMiddleware.forEach((middleware: any) => {
+        express.use(middleware);
+      });
+    }
+
   };
 }
+
+
 
 export { default as Http } from './http/index';
 export { default as Logger } from './util/logger';
