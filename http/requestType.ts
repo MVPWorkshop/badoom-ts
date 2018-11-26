@@ -18,9 +18,16 @@ export default function requestType(HttpRequest: HttpRequestInterface | any) {
         return res.status(400).send(errors);
       }
 
-      const result: HttpResponse = await originalFunction(req, request, res, next);
+      const result: any = await originalFunction(req, request, res, next);
 
-      res.status(result.code).set(result.headers).json(result.toJSON());
+      if (result instanceof HttpResponse) {
+        res.status(result.code).set(result.headers).json(result.toJSON());
+        return;
+      }
+
+      if (result) {
+        res.json(result);
+      }
     };
 
     Reflect.defineMetadata('design:open_api_request_type', HttpRequest, target, propertyKey);
