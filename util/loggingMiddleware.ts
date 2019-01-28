@@ -68,7 +68,6 @@ export function loggingMiddleware(opts: LoggingMiddlewareOpts): RequestHandler {
         };
 
         res.write = function (...args: any[]) {
-            console.log(args);
             streamedBody += args;
             return originalWrite(...args);
         };
@@ -98,6 +97,6 @@ function prepareResponseLog(res: Response, responseBody: any): Log {
         httpCode: res.statusCode,
         level: level,
         responseBody: responseBody || {},
-        responseHeaders: res.getHeaders()
+        responseHeaders: res.getHeaders(),
     };
 }
